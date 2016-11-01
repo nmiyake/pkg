@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Package errorprinter provides functions for printing errors in a human-readable manner.
-package errorprinter
+// Package errorstringer provides functions for converting errors into a a human-readable string representation.
+package errorstringer
 
 import (
 	"fmt"
