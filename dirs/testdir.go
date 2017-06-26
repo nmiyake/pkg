@@ -47,3 +47,21 @@ func RemoveAllFunc(path string) func() {
 		}
 	}
 }
+
+// SetwdWithRestorer sets the working directory to be the specified directory and returns a function that restores the
+// working directory to the value before it was changed. The returned function is suitable for use in a defer call.
+func SetwdWithRestorer(dir string) (func(), error) {
+	origWd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	if err := os.Chdir(dir); err != nil {
+		return nil, err
+	}
+	return func() {
+		// restore working directory
+		if err := os.Chdir(origWd); err != nil {
+			fmt.Printf("failed to restore working directory to %s: %v", origWd, err)
+		}
+	}, nil
+}
