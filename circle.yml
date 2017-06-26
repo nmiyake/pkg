@@ -23,6 +23,15 @@ stages:
             esac
     steps:
       - type: checkout
+      - type: cache-restore
+        key: godel-{{ checksum "godelw" }}
+      - type: shell
+        name: "Verify godel version"
+        command: ./godelw version
+      - type: cache-save
+        key: godel-{{ checksum "godelw" }}
+        paths:
+          - /root/.godel
       - type: shell
         name: "Set up /usr/local/go"
         command: |
@@ -36,5 +45,13 @@ stages:
         name: "Install packages"
         command: go install ./...
       - type: shell
-        name: "Run tests"
-        command: go test ./...
+        name: "Create test output directory"
+        command: mkdir -p "/tmp/test-results/$PROJECT-$(eval "$GET_GO_VERSION")"
+      - type: shell
+        name: "Run godel verification"
+        command: ./godelw verify --apply=false --junit-output="/tmp/test-results/$PROJECT-$(eval "$GET_GO_VERSION")/$PROJECT-$(eval "$GET_GO_VERSION")-tests.xml"
+      - type: test-results-store
+        path: /tmp/test-results
+      - type: artifacts-store
+        path: /tmp/test-results
+        destination: test-results

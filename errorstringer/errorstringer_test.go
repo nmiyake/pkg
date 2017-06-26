@@ -1,26 +1,24 @@
-/*
-MIT License
-
-Copyright (c) 2016 Nick Miyake
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+// MIT License
+//
+// Copyright (c) 2016 Nick Miyake
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 package errorstringer_test
 
@@ -77,18 +75,18 @@ func TestSingleStack(t *testing.T) {
 			"github.com/nmiyake/pkg/errorstringer_test.TestSingleStack",
 			"\t.+/github.com/nmiyake/pkg/errorstringer/errorstringer_test.go:[0-9]+",
 			"testing.tRunner",
-			"\t/usr/local/go/src/testing/testing.go:[0-9]+",
+			"\t.+/src/testing/testing.go:[0-9]+",
 			"runtime.goexit",
-			"\t/usr/local/go/src/runtime/asm_amd64.s:[0-9]+",
+			"\t.+/src/runtime/asm_amd64.s:[0-9]+",
 			"failed to load file",
 			"github.com/nmiyake/pkg/errorstringer_test.loadConfigInChannel",
 			"\t.+/src/github.com/nmiyake/pkg/errorstringer/errorstringer_test.go:[0-9]+",
 			"github.com/nmiyake/pkg/errorstringer_test.TestSingleStack",
 			"\t.+/src/github.com/nmiyake/pkg/errorstringer/errorstringer_test.go:[0-9]+",
 			"testing.tRunner",
-			"\t/usr/local/go/src/testing/testing.go:[0-9]+",
+			"\t.+/src/testing/testing.go:[0-9]+",
 			"runtime.goexit",
-			"\t/usr/local/go/src/runtime/asm_amd64.s:[0-9]+",
+			"\t.+/src/runtime/asm_amd64.s:[0-9]+",
 		}},
 	}
 
@@ -217,9 +215,9 @@ func TestStackWithInterleavedMessages(t *testing.T) {
 			"\tgithub.com/nmiyake/pkg/errorstringer_test.TestStackWithInterleavedMessages",
 			"\t\t.+/github.com/nmiyake/pkg/errorstringer/errorstringer_test.go:[0-9]+",
 			"\ttesting.tRunner",
-			"\t\t/usr/local/go/src/testing/testing.go:[0-9]+",
+			"\t\t.+/src/testing/testing.go:[0-9]+",
 			"\truntime.goexit",
-			"\t\t/usr/local/go/src/runtime/asm_amd64.s:[0-9]+",
+			"\t\t.+/src/runtime/asm_amd64.s:[0-9]+",
 		}},
 	}
 
