@@ -29,6 +29,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // SetGoEnvVariables sets the values of the GOPATH and GOROOT environment variables to be the correct values with all
@@ -69,8 +71,9 @@ func GoRoot() (string, error) {
 	}
 	if output, err := exec.Command("go", "env", "GOROOT").CombinedOutput(); err == nil {
 		return strings.TrimSpace(string(output)), nil
+	} else {
+		return "", errors.Wrap(err, "Unable to determine GOROOT")
 	}
-	return "", fmt.Errorf("unable to determine GOROOT")
 }
 
 // GetwdEvalSymLinks returns the working directory of the current process using os.GetWd(). Returns the path with all
