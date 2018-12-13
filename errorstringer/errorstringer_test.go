@@ -28,9 +28,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pkg/errors"
-
 	"github.com/nmiyake/pkg/errorstringer"
+	"github.com/pkg/errors"
 )
 
 func TestSingleStack(t *testing.T) {
