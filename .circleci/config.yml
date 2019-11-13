@@ -1,5 +1,5 @@
-owner-repo: &owner-repo
-  owner-repo: nmiyake/pkg
+checkout-path: &checkout-path
+  checkout-path: /go/src/github.com/nmiyake/pkg
 
 version: 2.1
 
@@ -14,68 +14,68 @@ workflows:
       # dirs
       - godel/verify:
           name: dirs-verify
-          checkout-path: /go/src/github.com/nmiyake/pkg/dirs
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/dirs
       - godel/test:
           name: dirs-test-go-1.13
-          checkout-path: /go/src/github.com/nmiyake/pkg/dirs
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/dirs
       - godel/test:
           name: dirs-test-go-1.12
-          checkout-path: /go/src/github.com/nmiyake/pkg/dirs
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.12.13
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/dirs
 
       # errorstringer
       - godel/verify:
           name: errorstringer-verify
-          checkout-path: /go/src/github.com/nmiyake/pkg/errorstringer
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/errorstringer
       - godel/test:
           name: errorstringer-test-go-1.13
-          checkout-path: /go/src/github.com/nmiyake/pkg/errorstringer
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/errorstringer
       - godel/test:
           name: errorstringer-test-go-1.12
-          checkout-path: /go/src/github.com/nmiyake/pkg/errorstringer
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.12.13
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/errorstringer
 
       # gofiles
       - godel/verify:
           name: gofiles-verify
-          checkout-path: /go/src/github.com/nmiyake/pkg/gofiles
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/gofiles
       - godel/test:
           name: gofiles-test-go-1.13
-          checkout-path: /go/src/github.com/nmiyake/pkg/gofiles
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.13.4
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/gofiles
       - godel/test:
           name: gofiles-test-go-1.12
-          checkout-path: /go/src/github.com/nmiyake/pkg/gofiles
+          <<: *checkout-path
           executor:
             name: go/golang
             version: 1.12.13
-            <<: *owner-repo
+            owner-repo: nmiyake/pkg/gofiles
