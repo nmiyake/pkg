@@ -1,69 +1,52 @@
-version: 2.1
-
-orbs:
-  go: palantir/go@0.0.12
-  godel: palantir/godel@0.0.11
-
+version: 2
+jobs:
+  dirs-verify:
+    docker:
+      - image: golang:1.13.4
+        environment:
+          GO111MODULE: 'on'
+    working_directory: /go/src/github.com/nmiyake/pkg/dirs
+    steps:
+      - checkout:
+          path: /go/src/github.com/nmiyake/pkg
+      - run:
+          command: go version
+      - run:
+          command: go env
+      - restore_cache:
+          name: Restoring Go build cache
+          keys:
+            - go-build-cache-v1-{{ .Branch }}-{{ .Revision }}
+            - go-build-cache-v1-{{ .Branch }}-
+            - go-build-cache-v1-
+      - restore_cache:
+          name: Restoring Go module cache
+          keys:
+            - go-mod-cache-v1-{{ .Branch }}-{{ .Revision }}-{{ checksum "go.mod" }}-{{ checksum "go.sum" }}
+            - go-mod-cache-v1-{{ .Branch }}-{{ .Revision }}-{{ checksum "go.mod" }}
+            - go-mod-cache-v1-{{ .Branch }}-{{ .Revision }}
+            - go-mod-cache-v1-{{ .Branch }}
+            - go-mod-cache-v1-
+      - restore_cache:
+          name: Restoring godel cache
+          keys:
+            - godel-cache-v1-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
+      - run:
+          command: ./godelw version
+      - save_cache:
+          name: Saving godel cache
+          key: godel-cache-v1-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
+          paths:
+            - ~/.godel
+      - run:
+          command: ./godelw verify --apply=false --skip-test
+      - save_cache:
+          name: Saving Go module cache
+          key: go-mod-cache-v1-{{ .Branch }}-{{ .Revision }}-{{ checksum "go.mod" }}-{{ checksum "go.sum" }}
+          paths:
+            - /go/pkg/mod
 workflows:
   version: 2
   verify-test:
     jobs:
-      # dirs
-      - godel/verify:
-          name: dirs-verify
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/dirs
-      - godel/test:
-          name: dirs-test-go-1.13
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/dirs
-      - godel/test:
-          name: dirs-test-go-1.12
-          executor:
-            name: go/golang
-            version: 1.12.13
-            owner-repo: nmiyake/pkg/dirs
-
-      # errorstringer
-      - godel/verify:
-          name: errorstringer-verify
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/errorstringer
-      - godel/test:
-          name: errorstringer-test-go-1.13
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/errorstringer
-      - godel/test:
-          name: errorstringer-test-go-1.12
-          executor:
-            name: go/golang
-            version: 1.12.13
-            owner-repo: nmiyake/pkg/errorstringer
-
-      # gofiles
-      - godel/verify:
-          name: gofiles-verify
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/gofiles
-      - godel/test:
-          name: gofiles-test-go-1.13
-          executor:
-            name: go/golang
-            version: 1.13.4
-            owner-repo: nmiyake/pkg/gofiles
-      - godel/test:
-          name: gofiles-test-go-1.12
-          executor:
-            name: go/golang
-            version: 1.12.13
-            owner-repo: nmiyake/pkg/gofiles
+      - dirs-verify
