@@ -23,6 +23,7 @@
 package gofiles_test
 
 import (
+	"os"
 	"os/exec"
 	"testing"
 
@@ -33,6 +34,12 @@ import (
 )
 
 func TestWriteGoFiles(t *testing.T) {
+	restoreEnvVars := setEnvVars(map[string]string{
+		"GO111MODULE": "off",
+		"GOFLAGS":     "",
+	})
+	defer restoreEnvVars()
+
 	dir, cleanup, err := dirs.TempDir(".", "")
 	require.NoError(t, err)
 	defer cleanup()
@@ -71,4 +78,30 @@ func Baz() string {
 	require.NoError(t, err)
 
 	assert.Equal(t, "bar baz\n", string(output))
+}
+
+func setEnvVars(envVars map[string]string) func() {
+	origVars := make(map[string]string)
+	var unsetVars []string
+	for k := range envVars {
+		val, ok := os.LookupEnv(k)
+		if !ok {
+			unsetVars = append(unsetVars, k)
+			continue
+		}
+		origVars[k] = val
+	}
+
+	for k, v := range envVars {
+		_ = os.Setenv(k, v)
+	}
+
+	return func() {
+		for _, k := range unsetVars {
+			_ = os.Unsetenv(k)
+		}
+		for k, v := range origVars {
+			_ = os.Setenv(k, v)
+		}
+	}
 }
