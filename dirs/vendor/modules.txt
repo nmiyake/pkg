@@ -1,2 +1,2 @@
-# github.com/nmiyake/pkg v0.0.1
+# github.com/nmiyake/pkg v1.0.0
 github.com/nmiyake/pkg
