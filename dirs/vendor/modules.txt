@@ -1,3 +1,0 @@
-# github.com/nmiyake/pkg v1.0.0
-## explicit
-github.com/nmiyake/pkg
