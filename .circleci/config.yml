@@ -17,21 +17,14 @@ workflows:
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
+            version: 1.16.4
             owner-repo: nmiyake/pkg/dirs
       - godel/test:
-          name: dirs-test-go-1.14
+          name: dirs-test-go-1.15
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
-            owner-repo: nmiyake/pkg/dirs
-      - godel/test:
-          name: dirs-test-go-1.13
-          <<: *checkout-path
-          executor:
-            name: go/golang
-            version: 1.13.12
+            version: 1.15.12
             owner-repo: nmiyake/pkg/dirs
 
       # errorstringer
@@ -40,21 +33,14 @@ workflows:
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
+            version: 1.16.4
             owner-repo: nmiyake/pkg/errorstringer
       - godel/test:
-          name: errorstringer-test-go-1.14
+          name: errorstringer-test-go-1.15
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
-            owner-repo: nmiyake/pkg/errorstringer
-      - godel/test:
-          name: errorstringer-test-go-1.13
-          <<: *checkout-path
-          executor:
-            name: go/golang
-            version: 1.13.12
+            version: 1.15.12
             owner-repo: nmiyake/pkg/errorstringer
 
       # gofiles
@@ -63,19 +49,12 @@ workflows:
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
+            version: 1.16.4
             owner-repo: nmiyake/pkg/gofiles
       - godel/test:
-          name: gofiles-test-go-1.14
+          name: gofiles-test-go-1.15
           <<: *checkout-path
           executor:
             name: go/golang
-            version: 1.14.4
-            owner-repo: nmiyake/pkg/gofiles
-      - godel/test:
-          name: gofiles-test-go-1.13
-          <<: *checkout-path
-          executor:
-            name: go/golang
-            version: 1.13.12
+            version: 1.15.12
             owner-repo: nmiyake/pkg/gofiles
