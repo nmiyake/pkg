@@ -25,6 +25,7 @@ package gofiles_test
 import (
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 
 	"github.com/nmiyake/pkg/dirs"
@@ -35,23 +36,31 @@ import (
 
 func TestWriteGoFiles(t *testing.T) {
 	restoreEnvVars := setEnvVars(map[string]string{
-		"GO111MODULE": "off",
-		"GOFLAGS":     "",
+		"GOFLAGS": "",
 	})
 	defer restoreEnvVars()
 
-	dir, cleanup, err := dirs.TempDir(".", "")
+	dir, cleanup, err := dirs.TempDir("", "")
 	require.NoError(t, err)
 	defer cleanup()
 
 	goFiles, err := gofiles.Write(dir, []gofiles.GoFileSpec{
 		{
+			RelPath: "go.mod",
+			Src: `module github.com/foo
+
+require github.com/baz v1.0.0
+
+replace github.com/baz => ./baz
+`,
+		},
+		{
 			RelPath: "foo.go",
 			Src: `package main
 import (
 	"fmt"
-	"{{index . "bar/bar.go"}}"
-	"{{index . "vendor/github.com/baz/baz.go"}}"
+	"github.com/foo/bar"
+	"github.com/baz"
 )
 func main() {
 	fmt.Println(bar.Bar(), baz.Baz())
@@ -65,7 +74,11 @@ func Bar() string {
 }`,
 		},
 		{
-			RelPath: "vendor/github.com/baz/baz.go",
+			RelPath: "baz/go.mod",
+			Src:     `module github.com/baz`,
+		},
+		{
+			RelPath: "baz/baz.go",
 			Src: `package baz
 func Baz() string {
 	return "baz"
@@ -74,7 +87,9 @@ func Baz() string {
 	})
 	require.NoError(t, err)
 
-	output, err := exec.Command("go", "run", goFiles["foo.go"].Path).CombinedOutput()
+	goRunCmd := exec.Command("go", "run", "foo.go")
+	goRunCmd.Dir = filepath.Dir(goFiles["foo.go"].Path)
+	output, err := goRunCmd.CombinedOutput()
 	require.NoError(t, err)
 
 	assert.Equal(t, "bar baz\n", string(output))
