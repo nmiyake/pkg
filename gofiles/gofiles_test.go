@@ -28,23 +28,20 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nmiyake/pkg/dirs"
 	"github.com/nmiyake/pkg/gofiles"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestWriteGoFiles(t *testing.T) {
-	restoreEnvVars := setEnvVars(map[string]string{
-		"GOFLAGS": "",
-	})
-	defer restoreEnvVars()
+var (
+	noModuleFiles = []gofiles.GoFileSpec{
+		{
+			RelPath: "godelw",
+			Src:     "// placeholder",
+		},
+	}
 
-	dir, cleanup, err := dirs.TempDir("", "")
-	require.NoError(t, err)
-	defer cleanup()
-
-	goFiles, err := gofiles.Write(dir, []gofiles.GoFileSpec{
+	multiModuleFiles = []gofiles.GoFileSpec{
 		{
 			RelPath: "go.mod",
 			Src: `module github.com/foo
@@ -84,7 +81,16 @@ func Baz() string {
 	return "baz"
 }`,
 		},
+	}
+)
+
+func TestWriteGoFiles(t *testing.T) {
+	restoreEnvVars := setEnvVars(map[string]string{
+		"GOFLAGS": "",
 	})
+	defer restoreEnvVars()
+
+	goFiles, err := gofiles.Write(t.TempDir(), multiModuleFiles)
 	require.NoError(t, err)
 
 	goRunCmd := exec.Command("go", "run", "foo.go")
@@ -93,6 +99,42 @@ func Baz() string {
 	require.NoError(t, err)
 
 	assert.Equal(t, "bar baz\n", string(output))
+}
+
+// Verifies that Write returns an error if no go.mod file is present in the written files.
+func TestWriteGoFiles_noModule(t *testing.T) {
+	restoreEnvVars := setEnvVars(map[string]string{
+		"GOFLAGS": "",
+	})
+	defer restoreEnvVars()
+
+	_, err := gofiles.Write(t.TempDir(), noModuleFiles)
+	require.Error(t, err)
+}
+
+func TestWriteRaw(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		files []gofiles.GoFileSpec
+	}{
+		{
+			name:  "no go.mod files",
+			files: noModuleFiles,
+		},
+		{
+			name:  "multi-module files",
+			files: multiModuleFiles,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			restoreEnvVars := setEnvVars(map[string]string{
+				"GOFLAGS": "",
+			})
+			defer restoreEnvVars()
+
+			require.NoError(t, gofiles.WriteRaw(t.TempDir(), noModuleFiles))
+		})
+	}
 }
 
 func setEnvVars(envVars map[string]string) func() {

@@ -49,29 +49,17 @@ type GoFile struct {
 }
 
 // Write the Go files represented by the specifications in the files parameter using the provided directory as the root
-// directory.
+// directory. The provided files must contain a valid go project structure including any relevant module declarations.
 //
 // Returns a map of the written files where the key is the RelPath field of the specification that was written and the
 // value is the GoFile that was written for the specification.
+//
+// Use WriteRaw if the returned map of Go files are not needed or if you intend on writing Go files that
+// do not contain go.mod files.
 func Write(dir string, files []GoFileSpec) (map[string]GoFile, error) {
-	dir, err := filepath.Abs(dir)
+	goFiles, err := writeInternal(dir, files)
 	if err != nil {
 		return nil, err
-	}
-
-	// write all files
-	goFiles := make(map[string]GoFile, len(files))
-	for _, currFile := range files {
-		filePath := filepath.Join(dir, currFile.RelPath)
-		if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
-			return nil, err
-		}
-		if err := ioutil.WriteFile(filePath, []byte(currFile.Src), 0644); err != nil {
-			return nil, err
-		}
-		goFiles[currFile.RelPath] = GoFile{
-			Path: filePath,
-		}
 	}
 
 	// after all files have been written, determine import path for each one.
@@ -95,5 +83,38 @@ func Write(dir string, files []GoFileSpec) (map[string]GoFile, error) {
 		}
 	}
 
+	return goFiles, nil
+}
+
+// WriteRaw writes the Go files represented by the specifications in the files parameter using the
+// provided directory as the root directory.
+//
+// Unlike Write, WriteRaw does not enforce the requirement for a valid go file structure and will simply
+// write the specified files as is to the root directory, returning any errors that may be encountered.
+func WriteRaw(dir string, files []GoFileSpec) error {
+	_, err := writeInternal(dir, files)
+	return err
+}
+
+func writeInternal(dir string, files []GoFileSpec) (map[string]GoFile, error) {
+	dir, err := filepath.Abs(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	// write all files
+	goFiles := make(map[string]GoFile, len(files))
+	for _, currFile := range files {
+		filePath := filepath.Join(dir, currFile.RelPath)
+		if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+			return nil, err
+		}
+		if err := ioutil.WriteFile(filePath, []byte(currFile.Src), 0644); err != nil {
+			return nil, err
+		}
+		goFiles[currFile.RelPath] = GoFile{
+			Path: filePath,
+		}
+	}
 	return goFiles, nil
 }
