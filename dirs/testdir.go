@@ -24,14 +24,13 @@ package dirs
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
-// TempDir creates a directory using ioutil.TempDir. If the ioutil.TempDir call is successful, returns its result and a
+// TempDir creates a directory using os.MkdirTemp. If the os.MkdirTemp call is successful, returns its result and a
 // function that removes the directory. The returned function is suitable for use in a defer call.
 func TempDir(dir, prefix string) (string, func(), error) {
-	path, err := ioutil.TempDir(dir, prefix)
+	path, err := os.MkdirTemp(dir, prefix)
 	if err != nil {
 		return "", nil, err
 	}
