@@ -25,7 +25,6 @@ package gofiles
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -66,7 +65,7 @@ func Write(dir string, files []GoFileSpec) (map[string]GoFile, error) {
 		if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
 			return nil, err
 		}
-		if err := ioutil.WriteFile(filePath, []byte(currFile.Src), 0644); err != nil {
+		if err := os.WriteFile(filePath, []byte(currFile.Src), 0644); err != nil {
 			return nil, err
 		}
 		goFiles[currFile.RelPath] = GoFile{
